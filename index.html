@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momodou Njai — Full-Stack Developer</title>
+<meta name="description" content="Momodou Njai, computer science student and full-stack developer. Projects, write-ups and contact.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&family=Unbounded:wght@800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #101011;
+    --bg-3: #161617;
+    --ink: #f2f2f2;
+    --muted: #8d8d90;
+    --dim: #5b5b5e;
+    --red: #d4021d;
+    --line: rgba(255, 255, 255, 0.12);
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --gutter: clamp(18px, 5vw, 72px);
+    --max: 1280px;
+    --head-h: 64px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: transparent;   /* the fixed depth layers show through */
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .visually-hidden:focus { position: fixed; top: 10px; left: 10px; width: auto; height: auto; clip: auto; background: var(--red); color: #fff; padding: 8px 14px; z-index: 200; }
+  :focus-visible { outline: 1px solid var(--red); outline-offset: 4px; }
+
+  /* type system: thin, wide, uppercase */
+  .eyebrow {
+    margin: 0 0 18px;
+    font-size: 11px; font-weight: 400; letter-spacing: .34em; text-transform: uppercase; color: var(--muted);
+  }
+  .eyebrow.red { color: var(--red); }
+  h1, h2, h3 { font-weight: 200; text-transform: uppercase; letter-spacing: .12em; margin: 0; line-height: 1.12; }
+  h2 { font-size: clamp(26px, 3.6vw, 44px); }
+  h3 { font-size: clamp(19px, 2vw, 24px); letter-spacing: .14em; }
+  .body { color: var(--muted); font-size: 15px; max-width: 52ch; margin: 18px 0 0; }
+  .small-caps { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+
+  .link-more {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 26px;
+    font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--ink);
+    padding-bottom: 6px; border-bottom: 1px solid var(--line);
+    transition: border-color .3s, color .3s, gap .3s;
+  }
+  .link-more:hover { color: var(--red); border-color: var(--red); gap: 16px; }
+  .btn-red {
+    display: inline-block;
+    background: var(--red); color: #fff;
+    padding: 16px 44px;
+    font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+    transition: background .3s, transform .3s;
+  }
+  .btn-red:hover { background: #ee0a26; transform: translateY(-2px); }
+  .btn-ghost {
+    display: inline-block; padding: 16px 44px;
+    border: 1px solid var(--line);
+    font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+    transition: border-color .3s, color .3s;
+  }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  /* ============================ HEADER ============================ */
+  .head {
+    position: fixed; inset: 0 0 auto; z-index: 100;
+    height: var(--head-h);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    gap: clamp(16px, 4vw, 48px);
+    padding: 0 var(--gutter);
+    transition: background .4s, backdrop-filter .4s, border-color .4s;
+    border-bottom: 1px solid transparent;
+  }
+  .head.solid { background: rgba(10, 10, 10, .82); backdrop-filter: blur(14px); border-bottom-color: var(--line); }
+  .head nav { display: flex; gap: 32px; }
+  .head nav a, .head__right a {
+    font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+    transition: color .3s;
+  }
+  .head nav a:hover, .head__right a:hover { color: var(--ink); }
+  .head__mark {
+    font-size: 13px; letter-spacing: .4em; text-transform: uppercase; font-weight: 400;
+    text-align: center; white-space: nowrap;
+  }
+  .head__right { justify-self: end; }
+
+  /* ============================ HERO ============================ */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: calc(var(--head-h) + 40px) var(--gutter) 90px;
+    overflow: hidden;
+  }
+  /* thin bezel rings behind the name */
+  .rings { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .ring {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, .09);
+    border-radius: 50%;
+    width: min(76vmin, 640px); aspect-ratio: 1;
+  }
+  .ring:nth-child(2) { width: min(58vmin, 500px); border-color: rgba(255, 255, 255, .07); }
+  .ring:nth-child(3) { width: min(40vmin, 360px); border-color: rgba(255, 255, 255, .05); }
+  .ring--tick { animation: spin 46s linear infinite; }
+  .ring--tick::before {
+    content: ""; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+    width: 5px; height: 5px; background: var(--red); border-radius: 50%;
+    box-shadow: 0 0 14px 2px rgba(212, 2, 29, .75);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hero__inner { position: relative; z-index: 2; }
+  .hero h1 {
+    font-size: clamp(2.6rem, 8vw, 6.4rem);
+    font-weight: 100;
+    letter-spacing: .14em;
+    margin: 0 0 6px;
+  }
+  .hero h1 span { display: block; }
+  .hero h1 .line2 { font-weight: 300; letter-spacing: .2em; font-size: .42em; color: var(--muted); margin-top: 20px; }
+  .hero__tag { margin: 28px auto 0; max-width: 46ch; color: var(--muted); font-size: 15px; }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 40px; }
+
+  .scrollcue {
+    position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%);
+    display: grid; justify-items: center; gap: 14px; z-index: 2;
+    font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: var(--dim);
+  }
+  .scrollcue i { display: block; width: 1px; height: 54px; background: var(--line); position: relative; overflow: hidden; }
+  .scrollcue i::after {
+    content: ""; position: absolute; inset: 0; background: var(--ink);
+    transform: translateY(-100%); animation: drip 2.4s ease-in-out infinite;
+  }
+  @keyframes drip { 50% { transform: translateY(0); } 100% { transform: translateY(100%); } }
+
+  /* ============================ SECTION SHELL ============================ */
+  .section { padding: clamp(80px, 11vw, 150px) 0; }
+  .section--alt { background: rgba(16, 16, 17, 0.62); }
+  .section__head { margin-bottom: clamp(36px, 5vw, 64px); }
+  .section__head.center { text-align: center; }
+  .section__head.center .body { margin-inline: auto; }
+
+  /* ---------- collection grid ---------- */
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px 30px; margin-bottom: 46px; }
+  .tab {
+    font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--dim);
+    padding-bottom: 8px; border-bottom: 1px solid transparent;
+    transition: color .3s, border-color .3s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--red); }
+  .tab sup { color: var(--dim); font-size: 9px; margin-left: 4px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 2px; background: var(--line); border: 1px solid var(--line); }
+  .item { background: var(--bg); padding: 0 0 30px; display: flex; flex-direction: column; }
+  .item[hidden] { display: none; }
+  .item__shot {
+    position: relative;
+    aspect-ratio: 4 / 3.2;
+    overflow: hidden;
+    background: linear-gradient(150deg, #1b1b1d, #0c0c0d 70%);
+    display: grid; place-items: center;
+  }
+  .item__shot::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(70% 60% at 50% 50%, #000, transparent 75%);
+  }
+  .item__glow {
+    position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .16), transparent 62%);
+    transition: transform .8s cubic-bezier(.2, .8, .2, 1);
+  }
+  .item:hover .item__glow { transform: scale(1.18); }
+  .item__mono {
+    position: relative;
+    font-size: clamp(54px, 7vw, 86px); font-weight: 100; letter-spacing: .06em;
+    color: rgba(255, 255, 255, .92);
+    transition: transform .8s cubic-bezier(.2, .8, .2, 1);
+  }
+  .item:hover .item__mono { transform: translateY(-6px); }
+  .item__no {
+    position: absolute; top: 16px; left: 18px;
+    font-size: 10px; letter-spacing: .3em; color: var(--dim);
+  }
+  .item__cat { position: absolute; top: 16px; right: 18px; font-size: 10px; letter-spacing: .3em; color: var(--dim); }
+  .item__body { padding: 26px 24px 0; flex: 1; display: flex; flex-direction: column; }
+  .item__body h3 { margin-bottom: 12px; }
+  .item__body p { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+  .item__spec { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+  .item__spec span { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+  .item__spec b { color: var(--ink); font-weight: 400; }
+
+
+  /* ============ DEPTH: one fixed background, drifting mid field, lifted foreground ============ */
+  /* The whole page sits on a single painted background (glows, stars, grid, a warm ribbon, vignette),
+     drawn once to fit the viewport by the script below. The cube scene shows the same image behind
+     its glass, pixel-aligned, so the page reads as one continuous surface. */
+  /* taller than the screen (the script sets its height) and slid up as the page scrolls */
+  .bg { position: fixed; top: 0; left: 0; z-index: -3; width: 100%; height: 100%; display: block; pointer-events: none; will-change: transform; }
+  /* the ribbon: a ring of warm light much bigger than the screen, slowly turning (see paintRibbon) */
+  .bg-ribbon {
+    position: fixed; left: 50%; top: 50%; z-index: -2;
+    width: 130vmax; height: 130vmax; margin: -65vmax 0 0 -65vmax;
+    display: block; pointer-events: none; will-change: transform;
+  }
+
+  /* mid ground: huge faint words that drift against the content */
+  .ghost {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(8rem, 30vw, 28rem);
+    font-weight: 100; letter-spacing: .06em; text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, .075);
+    white-space: nowrap; pointer-events: none; user-select: none;
+    z-index: -1;
+  }
+  /* NB: no overflow:hidden on the sections — it would kill the sticky cube and panels */
+  .section, .contact { position: relative; }
+  .ghost-wrap { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; will-change: transform; }
+
+  /* foreground: lift the cards off the page with real shadow */
+  .panel__stage { box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .95), 0 0 0 1px rgba(255,255,255,.04); }
+  .cube-scene { filter: drop-shadow(0 60px 60px rgba(0, 0, 0, .8)); }
+  .caps, .archive, .facts { position: relative; z-index: 1; }
+
+
+  /* ---------- scroll-driven project cube ---------- */
+  /* 1 screen for the pinned stage + ~half a screen of scroll per side */
+  .cube-track { position: relative; height: var(--track, 420svh); }   /* set from the number of projects */
+  .cube-stage {
+    position: sticky; top: 0;
+    height: 100svh;
+    display: grid; place-items: center;
+    overflow: hidden;
+  }
+  .cube-scene {
+    --cube: min(62vmin, 460px);
+    position: relative;
+    width: min(92vw, 780px);
+    height: min(76vh, 620px);
+    perspective: 1500px;      /* only used by the flat/DOM fallback */
+    perspective-origin: 50% 45%;
+  }
+  body.flat .cube-scene { width: auto; height: auto; }
+  .cube {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .face {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding: clamp(16px, 3vmin, 30px);
+    background: linear-gradient(158deg, #1a1a1e, #0a0a0b 74%);
+    border: 1px solid var(--line);
+    backface-visibility: hidden;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, .7);
+  }
+  .face--front  { transform: rotateY(0deg)    translateZ(calc(var(--cube) / 2)); }
+  .face--right  { transform: rotateY(90deg)   translateZ(calc(var(--cube) / 2)); }
+  .face--back   { transform: rotateY(180deg)  rotateZ(90deg)  translateZ(calc(var(--cube) / 2)); }
+  .face--left   { transform: rotateY(-90deg)  rotateZ(90deg)  translateZ(calc(var(--cube) / 2)); }
+  .face--top    { transform: rotateX(90deg)   rotateZ(-90deg) translateZ(calc(var(--cube) / 2)); }
+  .face--bottom { transform: rotateX(-90deg)  translateZ(calc(var(--cube) / 2)); }
+  .face__top { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--dim); }
+  .face__mid { position: relative; flex: 1; display: grid; place-items: center; min-height: 0; }
+  .face__glow {
+    position: absolute; width: 74%; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .14), transparent 62%);
+  }
+  .face__mono { position: relative; font-size: clamp(34px, 9vmin, 64px); font-weight: 100; letter-spacing: .08em; }
+  /* a project with a real logo instead of a monogram: Kombo's "Kombo." (Unbounded ExtraBold, blue full stop) */
+  .face__mono--logo { font-family: "Unbounded", var(--sans); font-weight: 800; letter-spacing: -0.04em; font-size: clamp(28px, 7vmin, 50px); display: inline-flex; align-items: baseline; }
+  .face__mono--logo b { width: .3em; height: .3em; border-radius: 50%; background: #007AFF; margin-left: .04em; }
+  .face h3 { font-size: clamp(14px, 2.4vmin, 19px); letter-spacing: .14em; margin-bottom: 10px; }
+  .face p { margin: 0; color: var(--muted); font-size: clamp(11px, 1.7vmin, 13px); line-height: 1.55; }
+  .face__spec {
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; gap: 14px;
+    font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim);
+  }
+  .face__spec b { color: var(--ink); font-weight: 400; }
+
+  /* Product-reveal staging (after a product-page reference): a matte object on black,
+     a giant wordmark sliding behind it, one hairline callout per project, a thin HUD */
+  body:not(.flat) .cube-scene { position: absolute; inset: 0; width: auto; height: auto; z-index: 1; }
+  .callout {
+    position: absolute; z-index: 2; pointer-events: none;
+    width: min(30vw, 400px);
+    text-transform: none;
+  }
+  .callout--a { left: clamp(24px, 7vw, 120px); top: 18%; }
+  .callout--b { right: clamp(24px, 7vw, 120px); top: 57%; width: min(26vw, 360px); }
+  .callout__line { display: block; height: 1px; background: rgba(255, 255, 255, .5); margin: 14px 0 22px; transform: scaleX(0); transition: transform .8s cubic-bezier(.2, .7, .1, 1); }
+  /* each line reaches in toward the object */
+  .callout--a .callout__line { width: calc(100% + 9vw); transform-origin: right; }
+  .callout--b .callout__line { width: calc(100% + 9vw); margin-left: -9vw; transform-origin: left; }
+  .callout__icon {
+    display: inline-grid; place-items: center; height: 18px; padding: 0 5px; border-radius: 4px;
+    background: var(--ink); color: #000; font: 600 8px/1 var(--sans); letter-spacing: .08em;
+  }
+  .callout h3 { font: 400 clamp(26px, 2.7vw, 38px)/1.08 var(--sans); letter-spacing: -.02em; text-transform: none; margin: 0 0 12px; }
+  .callout p { margin: 0; color: #c9c9cc; font-size: 13px; line-height: 1.5; max-width: 34ch; }
+  .callout__meta { display: block; margin-top: 14px; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+  .callout__icon, .callout h3, .callout p, .callout__meta { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .7s cubic-bezier(.2, .7, .1, 1); }
+  .callout.on .callout__line { transform: none; }
+  .callout.on .callout__icon { opacity: 1; transform: none; transition-delay: .35s; }
+  .callout.on h3 { opacity: 1; transform: none; transition-delay: .45s; }
+  .callout.on p { opacity: 1; transform: none; transition-delay: .55s; }
+  .callout.on .callout__meta { opacity: 1; transform: none; transition-delay: .65s; }
+  @media (max-width: 720px) {
+    /* phones: one caption under the object */
+    .callout--a, .callout--b { left: var(--gutter); right: var(--gutter); top: auto; bottom: 86px; width: auto; }
+    .callout--a .callout__line, .callout--b .callout__line { width: 100%; margin-left: 0; }
+    .callout h3 { font-size: 28px; }
+  }
+
+  .cube-hud {
+    position: absolute; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: clamp(18px, 4vh, 36px);
+    display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim);
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) { .cube-hud { bottom: 76px; } .callout--a, .callout--b { bottom: 116px; } }
+  .cube-hud__idx b { color: var(--ink); font-weight: 400; }
+  .cube-hud__prog { display: flex; align-items: center; gap: 12px; }
+  .cube-hud__prog i { position: relative; width: clamp(60px, 10vw, 120px); height: 1px; background: rgba(255, 255, 255, .18); overflow: hidden; }
+  .cube-hud__prog i b { position: absolute; inset: 0; background: var(--ink); transform-origin: left; transform: scaleX(0); }
+  .cube-hud__prog span { min-width: 3.5ch; text-align: right; color: var(--ink); letter-spacing: .08em; }
+  body.flat .callout { display: none; }
+  /* the 3D stage shows the page background behind the glass, so the canvas needs no page shadow */
+  body:not(.flat) .cube-scene { filter: none; }
+
+  #cubeGL { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+  body:not(.flat) #cubeGL { display: block; }
+  /* in 3D mode the DOM faces stay in the accessibility tree but leave the layout */
+  body:not(.flat) .cube {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  /* the toggle only appears once WebGL is actually up */
+  .view-toggle { display: none; }
+  body.cube-ready .view-toggle { display: inline-block; }
+
+  .view-toggle {
+    margin-top: 26px;
+    padding: 11px 24px;
+    border: 1px solid var(--line);
+    font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--muted);
+    transition: border-color .3s, color .3s;
+  }
+  .view-toggle:hover { border-color: var(--red); color: var(--ink); }
+
+  /* flat fallback: no 3D, no scroll-jacking */
+  body.flat .cube-track { height: auto; }
+  body.flat .cube-stage { position: static; height: auto; display: block; }
+  body.flat .cube-scene { width: auto; height: auto; perspective: none; }
+  body.flat .cube {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 460px)); justify-content: center;
+    gap: 2px; background: var(--line); border: 1px solid var(--line);
+    transform: none !important; transform-style: flat; height: auto;
+  }
+  body.flat .face { position: relative; inset: auto; transform: none !important; border: 0; min-height: 340px; }
+  body.flat .cube-hud { display: none; }
+
+  /* cube <-> grid: while the six faces travel, the 3D canvas covers the whole window
+     (above the page, under the header). The notes around the object fade out first; each card
+     appears as its glass lands, its contents rising in one after another */
+  body.morph .cube-scene { filter: none; perspective: none; }
+  body.morph:not(.flat) .cube-stage { z-index: 40; }
+  body.morph #cubeGL { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 40; pointer-events: none; }
+  .cube-hud { transition: opacity .35s ease; }
+  body.morph .callout, body.morph .cube-hud { opacity: 0 !important; transition: opacity .2s ease; }
+  body.morph .face { transition: opacity .3s ease; }
+  body.morph-cards-off .face { opacity: 0; }
+  body.morph-cards-off .face.landed { opacity: 1; }
+  body.morph .face.landed > * { animation: face-rise .6s cubic-bezier(.2, .7, .1, 1) both; }
+  body.morph .face.landed > :nth-child(2) { animation-delay: .05s; }
+  body.morph .face.landed > :nth-child(3) { animation-delay: .1s; }
+  body.morph .face.landed > :nth-child(4) { animation-delay: .15s; }
+  body.morph .face.landed > :nth-child(5) { animation-delay: .2s; }
+  @keyframes face-rise { from { opacity: 0; transform: translateY(18px); } }
+  /* the impact: a bright rim and a burst of light as the glass slams down */
+  body.morph .face.landed { animation: card-flash .9s cubic-bezier(.2, .7, .1, 1) both; }
+  @keyframes card-flash {
+    from { box-shadow: var(--lg-shadow), 0 0 0 1px rgba(255, 255, 255, .55), 0 0 80px 6px rgba(255, 255, 255, .22); }
+    to   { box-shadow: var(--lg-shadow), 0 0 0 1px rgba(255, 255, 255, 0), 0 0 80px 6px rgba(255, 255, 255, 0); }
+  }
+
+  /* ---------- feature panels: sticky visual, scrolling copy ---------- */
+  .panel { border-top: 1px solid var(--line); }
+  .panel__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 5vw, 80px); align-items: start; }
+  .panel--flip .panel__stage { order: 2; }
+  .panel__stage {
+    position: sticky; top: calc(var(--head-h) + 30px);
+    aspect-ratio: 5 / 6;
+    background: linear-gradient(160deg, #17171a, #0a0a0b 72%);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    overflow: hidden;
+  }
+  .panel__stage::after {
+    content: "";
+    position: absolute; inset: auto -20% -40% -20%; height: 60%;
+    background: radial-gradient(60% 100% at 50% 100%, rgba(212, 2, 29, .22), transparent 70%);
+  }
+  .panel__stage .mono { font-size: clamp(70px, 11vw, 150px); font-weight: 100; letter-spacing: .08em; opacity: .95; }
+  .panel__stage .mono--logo { font: 800 clamp(40px, 7vw, 96px)/1 "Unbounded", var(--sans); letter-spacing: -0.04em; display: inline-flex; align-items: baseline; }
+  .panel__stage .mono--logo b { width: .3em; height: .3em; border-radius: 50%; background: #007AFF; margin-left: .04em; }
+  .panel__stage .ring { width: 70%; }
+  .panel__copy { padding: clamp(20px, 6vw, 90px) 0 clamp(40px, 8vw, 120px); }
+  .panel__copy h2 { margin-bottom: 8px; }
+  .facts { margin-top: 46px; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .fact { background: var(--bg); padding: 18px 20px; display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
+  .fact span { font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+  .fact b { font-weight: 300; font-size: 14px; text-align: right; }
+
+  /* ---------- capabilities ---------- */
+  .caps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .cap { background: var(--bg-2); padding: 34px 26px 40px; }
+  .cap__n { font-size: 10px; letter-spacing: .3em; color: var(--red); }
+  .cap h3 { margin: 16px 0 14px; }
+  .cap p { color: var(--muted); font-size: 14px; margin: 0; }
+
+  /* ---------- archive list ---------- */
+  .archive { border-top: 1px solid var(--line); }
+  .arch-row {
+    display: grid; grid-template-columns: 80px 1fr auto; gap: 24px; align-items: center;
+    padding: 26px 4px;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left .4s, background .4s;
+  }
+  .arch-row:hover { padding-left: 18px; background: rgba(255, 255, 255, .02); }
+  .arch-row .yr { font-size: 11px; letter-spacing: .22em; color: var(--dim); }
+  .arch-row .nm { font-size: clamp(17px, 2.2vw, 22px); font-weight: 200; letter-spacing: .1em; text-transform: uppercase; }
+  .arch-row .st { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); text-align: right; }
+
+  /* ---------- contact ---------- */
+  .contact {
+    position: relative; text-align: center;
+    padding: clamp(100px, 14vw, 190px) var(--gutter);
+    background: radial-gradient(70% 70% at 50% 50%, #16161a, var(--bg) 72%);
+    border-top: 1px solid var(--line);
+  }
+  .contact h2 { font-size: clamp(30px, 6vw, 68px); font-weight: 100; }
+  .contact .mail { display: inline-block; margin-top: 26px; font-size: 13px; letter-spacing: .2em; color: var(--muted); word-break: break-all; }
+  .contact__cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 44px; }
+  .contact__links { display: flex; flex-wrap: wrap; gap: 10px 34px; justify-content: center; margin-top: 46px; }
+  .contact__links a { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: var(--dim); transition: color .3s; }
+  .contact__links a:hover { color: var(--red); }
+
+  .foot {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 30px;
+    padding: 26px var(--gutter) 78px;
+    border-top: 1px solid var(--line);
+    font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--dim);
+  }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 78px; transform: translate(-50%, 16px);
+    background: var(--red); color: #fff; font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    padding: 11px 20px; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; z-index: 130;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 1s ease, transform 1s cubic-bezier(.16, .84, .3, 1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .09s; }
+  .reveal.d2 { transition-delay: .18s; }
+  .reveal.d3 { transition-delay: .27s; }
+
+  /* ============================ RESPONSIVE ============================ */
+  @media (max-width: 980px) {
+    .caps { grid-template-columns: repeat(2, 1fr); }
+    .panel__inner { grid-template-columns: 1fr; }
+    .panel--flip .panel__stage { order: 0; }
+    .panel__stage { position: relative; top: 0; aspect-ratio: 4 / 3; }
+    .panel__copy { padding: 30px 0 60px; }
+  }
+  @media (max-width: 900px) {
+    .head nav { display: none; }
+    .head { grid-template-columns: 1fr auto; }
+    .head__mark { justify-self: start; text-align: left; }
+    .caps { grid-template-columns: 1fr; }
+    .arch-row { grid-template-columns: 62px 1fr; row-gap: 6px; }
+    .arch-row .st { grid-column: 2; text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* ============================ LIQUID GLASS ============================
+     After Apple's material: frosted, colour-lifting glass with a bright specular rim.
+     One recipe (the .lg-* tokens below), applied to the header, buttons, cards,
+     the cube's callouts and HUD, and the edit bar. Pure CSS, so it works everywhere
+     backdrop-filter does; without it, the panels fall back to a dark translucent fill. */
+  :root {
+    --lg-fill: linear-gradient(145deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .035) 42%, rgba(255, 255, 255, .07));
+    --lg-blur: blur(24px) saturate(185%) brightness(1.06);
+    --lg-rim: linear-gradient(140deg, rgba(255, 255, 255, .75), rgba(255, 255, 255, .12) 26%, rgba(255, 255, 255, 0) 52%, rgba(255, 255, 255, .06) 74%, rgba(255, 255, 255, .38));
+    --lg-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -10px 24px -18px rgba(255, 255, 255, .25),
+                 inset 0 0 28px rgba(255, 255, 255, .04), 0 24px 60px -24px rgba(0, 0, 0, .75);
+  }
+  .head, .btn-red, .btn-ghost, .view-toggle, .panel__stage, .facts, .cap, .archive,
+  .callout, .cube-hud, .toast, body.flat .face {
+    background: var(--lg-fill);
+    -webkit-backdrop-filter: var(--lg-blur);
+    backdrop-filter: var(--lg-blur);
+    border: 0;
+    box-shadow: var(--lg-shadow);
+    isolation: isolate;
+  }
+  /* the rim below is positioned against its element; these ones were static until now
+     (the header, sticky panel, callouts, HUD and toast keep their own fixed/sticky/absolute) */
+  .btn-red, .btn-ghost, .view-toggle, .facts, .cap, .archive, body.flat .face { position: relative; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .head, .btn-red, .btn-ghost, .view-toggle, .panel__stage, .facts, .cap, .archive,
+    .callout, .cube-hud, .toast, body.flat .face { background: rgba(24, 24, 28, .88); }
+  }
+  /* the specular rim: a 1px gradient ring, brightest where the light hits the curve */
+  .head::before, .btn-red::before, .btn-ghost::before, .view-toggle::before, .panel__stage::before,
+  .facts::before, .cap::before, .archive::before, .callout::before, .cube-hud::before,
+  .toast::before, body.flat .face::before {
+    content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    border-radius: inherit; padding: 1px;
+    background: var(--lg-rim);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+
+  /* header: a floating glass capsule */
+  .head {
+    inset: 12px var(--gutter) auto;
+    height: 56px; padding: 0 26px;
+    border-radius: 999px;
+  }
+  .head.solid { background: var(--lg-fill), rgba(12, 12, 14, .42); -webkit-backdrop-filter: var(--lg-blur); backdrop-filter: var(--lg-blur); border-bottom-color: transparent; }
+
+  /* buttons: glass pills; the primary one is tinted with the accent */
+  .btn-red, .btn-ghost, .view-toggle { border-radius: 999px; }
+  .btn-red { background: linear-gradient(145deg, rgba(255, 60, 80, .62), rgba(212, 2, 29, .42) 55%, rgba(255, 90, 110, .5)); }
+  .btn-red:hover { background: linear-gradient(145deg, rgba(255, 70, 90, .75), rgba(222, 10, 38, .55) 55%, rgba(255, 100, 120, .6)); }
+  .btn-ghost:hover, .view-toggle:hover:hover { background: var(--lg-fill), rgba(255, 255, 255, .06); color: var(--ink); }
+  .btn-red, .btn-ghost { transition: background .3s, transform .5s cubic-bezier(.2, .8, .2, 1), box-shadow .3s; }
+  .btn-red:hover, .btn-ghost:hover { transform: translateY(-2px) scale(1.02); }
+  .toast { border-radius: 999px; background: linear-gradient(145deg, rgba(255, 60, 80, .7), rgba(212, 2, 29, .5)); }
+
+  /* cards */
+  .panel__stage { border-radius: 30px; }
+  .panel__stage::after { border-radius: inherit; }
+  .facts { border-radius: 22px; overflow: hidden; background: var(--lg-fill); gap: 0; }
+  .fact { background: transparent; border-top: 1px solid rgba(255, 255, 255, .08); }
+  .fact:first-child { border-top: 0; }
+  .caps { gap: 14px; background: none; border: 0; }
+  .cap { border-radius: 26px; background: var(--lg-fill); }
+  .archive { border-radius: 26px; padding: 0 clamp(14px, 2.4vw, 30px); border-top: 0; }
+  .arch-row:last-child { border-bottom: 0; }
+  .arch-row:hover { background: rgba(255, 255, 255, .04); border-radius: 16px; }
+  body.flat .face { border-radius: 26px; }
+  body.flat .cube { gap: 14px; background: none; border: 0; }
+  .view-toggle { padding: 12px 26px; }
+
+  /* the cube's callouts and HUD: glass floating over the scene */
+  .callout { padding: 20px 24px 22px; border-radius: 26px; opacity: 0; transform: translateY(8px) scale(.98); transition: opacity .45s ease, transform .7s cubic-bezier(.2, .7, .1, 1); }
+  .callout.on { opacity: 1; transform: none; }   /* the glass itself fades in with its note */
+  .callout--b { padding-left: 24px; }
+  .callout__line { margin: 12px 0 18px; }
+  .callout--a .callout__line { width: calc(100% + 24px + 9vw); }
+  .callout--b .callout__line { width: calc(100% + 24px + 9vw); margin-left: calc(-24px - 9vw); }
+  .cube-hud { padding: 12px 22px; border-radius: 999px; }
+  @media (max-width: 720px) {
+    .head { inset: 10px 12px auto; padding: 0 18px; }
+    .callout--a .callout__line, .callout--b .callout__line { width: 100%; margin-left: 0; }
+  }
+
+  /* one continuous background for the whole page (painted on #bgCanvas, shared with the cube): no per-section fills */
+  .section--alt, .contact { background: none; }
+</style>
+</head>
+<body class="flat">
+<!-- ============ the background: one fixed, painted surface for the whole page (see paintBackground) ============ -->
+<canvas class="bg" id="bgCanvas" aria-hidden="true"></canvas>
+<canvas class="bg-ribbon" id="bgRibbon" aria-hidden="true"></canvas>
+
+<a class="visually-hidden" href="#collection">Skip to projects</a>
+
+<header class="head" id="head">
+  <nav>
+    <a href="#collection">Collection</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#archive">Archive</a>
+  </nav>
+  <a class="head__mark" href="#top" data-f="shortname">Momodou Njai</a>
+  <span class="head__right"><a href="#contact">Contact</a></span>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="rings" aria-hidden="true">
+    <span class="ring ring--tick"></span>
+    <span class="ring"></span>
+    <span class="ring"></span>
+  </div>
+
+  <div class="hero__inner">
+    <p class="eyebrow">Selected work — 2026</p>
+    <h1>
+      <span data-f="name" id="nameMain">Momodou Mlick Njai</span>
+      <span class="line2" data-f="role">Full-Stack Developer</span>
+    </h1>
+    <p class="hero__tag" data-f="tagline">
+      Third-year computer science student. I build web apps with React and TypeScript, and I write down what broke.
+    </p>
+    <div class="hero__cta">
+      <a class="btn-red" href="#collection">View the collection</a>
+      <a class="btn-ghost" href="#contact">Get in touch</a>
+    </div>
+  </div>
+
+  <span class="scrollcue" aria-hidden="true">Scroll to discover<i></i></span>
+</section>
+
+<main>
+
+<!-- ============================ COLLECTION ============================ -->
+<section class="section" id="collection">
+  <div class="ghost-wrap" data-par="0.26" aria-hidden="true"><span class="ghost">Work</span></div>
+  <div class="wrap">
+    <div class="section__head center reveal">
+      <p class="eyebrow red">The collection</p>
+      <h2>Projects I have built</h2>
+      <p class="body">Kombo, a computer marketplace for The Gambia with an honest advisor built in.</p>
+      <button class="view-toggle reveal" id="viewToggle" type="button" aria-pressed="false">View as flat grid</button>
+    </div>
+
+  </div>
+
+  <div class="cube-track" id="cubeTrack">
+    <div class="cube-stage">
+      <div class="cube-scene">
+        <canvas id="cubeGL" aria-hidden="true"></canvas>
+        <div class="cube" id="cube">
+      <article class="face face--front">
+        <div class="face__top"><span>No. 01</span><span>Web</span></div>
+        <div class="face__mid"><span class="face__glow"></span><span class="face__mono face__mono--logo" aria-label="Kombo.">Kombo<b></b></span></div>
+        <h3 data-f="kombo-t">Kombo</h3>
+        <p data-f="kombo-b">An honest computer marketplace for The Gambia. Every listing gets a fair-price check, and the advisor will tell you not to buy when nothing fits.</p>
+        <div class="face__spec"><span><b>TypeScript</b> · React · Vite</span><span>2026</span></div>
+      </article>
+        </div>
+      </div>
+
+      <div class="callout callout--a" aria-hidden="true"><span class="callout__icon"></span><span class="callout__line"></span><h3></h3><p></p><span class="callout__meta"></span></div>
+      <div class="callout callout--b" aria-hidden="true"><span class="callout__icon"></span><span class="callout__line"></span><h3></h3><p></p><span class="callout__meta"></span></div>
+
+      <div class="cube-hud" aria-hidden="true">
+        <span class="cube-hud__idx"><b id="cubeIdx">01</b> / <span id="cubeTotal">01</span> &nbsp;·&nbsp; <span id="cubeCat">Web</span></span>
+        <span class="cube-hud__prog">Scroll <i><b id="cubeBar"></b></i><span id="cubePct">0%</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FEATURE PANELS ============================ -->
+<section class="section section--alt panel" id="p-kombo">
+  <div class="ghost-wrap" data-par="0.26" aria-hidden="true"><span class="ghost">No. 01</span></div>
+  <div class="wrap">
+    <div class="panel__inner">
+      <div class="panel__stage reveal" aria-hidden="true"><span class="ring ring--tick"></span><span class="mono mono--logo">Kombo<b></b></span></div>
+      <div class="panel__copy">
+        <p class="eyebrow red reveal">Project No. 01 — Web</p>
+        <h2 class="reveal">Kombo</h2>
+        <p class="body reveal d1">
+          Buying a used laptop in The Gambia means guessing whether the price is fair. Kombo is a marketplace
+          where every listing gets a fair-price badge from a price model, and an advisor matches what you need
+          and what you can spend to real listings, or tells you to wait.
+        </p>
+        <p class="body reveal d1">
+          I designed it before building it, then wrote the data model, price model and advisor as plain
+          TypeScript with tests, and the React app on top. The honesty rules live in code: paid placement
+          never reaches the advisor's picks, and a scam-priced listing is never recommended.
+        </p>
+        <div class="facts reveal d2">
+          <div class="fact"><span>Stack</span><b>TypeScript · React · Vite</b></div>
+          <div class="fact"><span>Engines</span><b>Fair-price model and advisor</b></div>
+          <div class="fact"><span>Tests</span><b>65, run in Node</b></div>
+          <div class="fact"><span>Status</span><b>Working demo, invented listings</b></div>
+        </div>
+        <a class="link-more reveal d2" href="#contact">Ask me for a demo →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CAPABILITIES ============================ -->
+<section class="section" id="capabilities">
+  <div class="ghost-wrap" data-par="0.26" aria-hidden="true"><span class="ghost">Stack</span></div>
+  <div class="wrap">
+    <div class="section__head center reveal">
+      <p class="eyebrow red">Capabilities</p>
+      <h2>What I actually use</h2>
+      <p class="body">Honest, not aspirational. Each one is used in Kombo or in this site.</p>
+    </div>
+
+    <div class="caps">
+      <div class="cap reveal"><span class="cap__n">01</span><h3>Languages</h3><p>TypeScript for all of Kombo, from the price model to the interface. Plain JavaScript, HTML and CSS for this site.</p></div>
+      <div class="cap reveal d1"><span class="cap__n">02</span><h3>Web</h3><p>React and React Router, built with Vite. Listings people add are kept in the browser's storage, so the demo runs with no server.</p></div>
+      <div class="cap reveal d2"><span class="cap__n">03</span><h3>Logic and tests</h3><p>Rules kept apart from the interface, as plain TypeScript: a fair-price model and an advisor, checked by 65 tests that run in Node.</p></div>
+      <div class="cap reveal d3"><span class="cap__n">04</span><h3>Graphics</h3><p>This site: a three.js glass object driven by scroll, backgrounds painted on canvas, and a flat view for anyone who turns motion off.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ARCHIVE ============================ -->
+<section class="section section--alt" id="archive">
+  <div class="ghost-wrap" data-par="0.26" aria-hidden="true"><span class="ghost">2026</span></div>
+  <div class="wrap">
+    <div class="section__head reveal">
+      <p class="eyebrow red">Archive</p>
+      <h2>Everything, by year</h2>
+    </div>
+
+    <div class="archive reveal">
+      <a class="arch-row" href="#p-kombo"><span class="yr">2026</span><span class="nm">Kombo</span><span class="st">Web · TypeScript</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="contact" id="contact">
+  <div class="ghost-wrap" data-par="0.26" aria-hidden="true"><span class="ghost">Hello</span></div>
+  <p class="eyebrow red reveal">Contact</p>
+  <h2 class="reveal">Let's build something</h2>
+  <p class="body reveal d1" style="margin-inline:auto">
+    Internships, project collaborations, or a question about anything above. Email is best, and I reply within a day or two.
+  </p>
+  <span class="mail reveal d1" data-f="email" id="mail">njaimomodou133@gmail.com</span>
+  <div class="contact__cta reveal d2">
+    <a class="btn-red" id="mailBtn" href="mailto:njaimomodou133@gmail.com">Send an email</a>
+    <button class="btn-ghost" id="copyBtn" type="button">Copy address</button>
+  </div>
+</section>
+
+<footer class="foot">
+  <span data-f="footL">Based in Banjul, The Gambia · Open to remote</span>
+  <span data-f="footR">BSc Computer Science · University of The Gambia · Class of 2027</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- header background after the hero ---------- */
+  var head = document.getElementById("head");
+  function onScroll() { head.classList.toggle("solid", window.scrollY > 40); }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  /* ---------- reveal on scroll ---------- */
+  var reveals = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -60px 0px" });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* ---------- parallax: three planes at different speeds ----------
+     Each [data-par] element moves against the scroll by its own factor, so the
+     far field crawls, the ghost words drift, and the content runs at full speed.
+     Everything is a transform, so it stays on the compositor.                  */
+  var parLayers = Array.prototype.slice.call(document.querySelectorAll("[data-par]"));
+  var parTicking = false;
+
+  // the ghost words drift against their section's travel through the viewport
+  function positionLayers() {
+    parTicking = false;
+    var vh = window.innerHeight;
+    for (var i = 0; i < parLayers.length; i++) {
+      var el = parLayers[i];
+      var r = el.parentElement.getBoundingClientRect();
+      var offset = (r.top + r.height / 2 - vh / 2) * -parseFloat(el.dataset.par);
+      el.style.transform = "translate3d(0," + offset.toFixed(2) + "px,0)";
+    }
+  }
+  function onParScroll() {
+    if (!parTicking) { parTicking = true; requestAnimationFrame(positionLayers); }
+  }
+
+  if (!reduceMotion && parLayers.length) {
+    positionLayers();
+    window.addEventListener("scroll", onParScroll, { passive: true });
+    window.addEventListener("resize", onParScroll);
+  }
+
+  /* ---------- the background: one painted surface, fixed behind the whole page ----------
+     Cool and warm glows, faint stars, a fading grid, a warm ribbon of light, a vignette.
+     It's painted taller than the screen and drifts up as you scroll: over the whole page it
+     travels a tenth of the scroll distance. The cube's glass shows this same canvas, cropped to
+     wherever it sits right now (it listens for "bg:painted"), so the page and the cube stage stay
+     one continuous background. It also leans away from the mouse (see "mouse drift" below), so
+     it's painted with a margin all round that the lean can reveal. */
+  var bgCanvas = document.getElementById("bgCanvas");
+  var BG_RATE = 0.1, bgExtra = 0;
+  var BG_MARGIN = 40, BG_LEAN = 16, RIBBON_LEAN = 34;   // px; the ribbon is "nearer", so it moves more
+  var lean = { x: 0, y: 0, tx: 0, ty: 0 };             // -1..1 each way, smoothed toward the pointer
+  function scrollSpan() { return Math.max(0, document.documentElement.scrollHeight - window.innerHeight); }
+  function driftBackground() {
+    var span = scrollSpan();
+    var y = span ? Math.min(1, window.scrollY / span) * bgExtra : 0;
+    bgCanvas.style.transform = "translate3d(" + (-lean.x * BG_LEAN).toFixed(2) + "px," + (-lean.y * BG_LEAN - y).toFixed(2) + "px,0)";
+  }
+  function paintBackground() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = document.documentElement.clientWidth, V = window.innerHeight;
+    bgExtra = reduceMotion ? 0 : Math.round(Math.min(scrollSpan() * BG_RATE, 2 * V));
+    var H = V + bgExtra;                      // the whole painted height; V is one screen of it
+    var vmax = Math.max(W, V) / 100;
+    var M = reduceMotion ? 0 : BG_MARGIN;
+    bgCanvas.style.left = bgCanvas.style.top = -M + "px";
+    bgCanvas.style.width = W + 2 * M + "px"; bgCanvas.style.height = H + 2 * M + "px";
+    bgCanvas.width = Math.round((W + 2 * M) * dpr); bgCanvas.height = Math.round((H + 2 * M) * dpr);
+    var ctx = bgCanvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = "#0a0a0a"; ctx.fillRect(0, 0, W + 2 * M, H + 2 * M);
+    ctx.setTransform(dpr, 0, 0, dpr, M * dpr, M * dpr);   // from here on, 0,0 is the screen's top left
+
+    function glow(x, y, r, rgba, fade) {
+      var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, rgba); g.addColorStop(fade, "rgba(0,0,0,0)");
+      ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    glow(21 * vmax, 19 * vmax, 31 * vmax, "rgba(46,84,148,.30)", 0.68);          // cool, top left
+    glow(W - 14 * vmax, H - 8 * vmax, 26 * vmax, "rgba(212,2,29,.16)", 0.68);    // the red, bottom right
+    glow(0.46 * W + 17 * vmax, 0.38 * V + 17 * vmax, 17 * vmax, "rgba(120,160,220,.12)", 0.7);
+    if (bgExtra > V * 0.5) glow(0.12 * W, V + bgExtra * 0.45, 24 * vmax, "rgba(46,84,148,.18)", 0.68);  // met further down
+
+    // faint stars (the same ones every time: a fixed seed)
+    var seed = 7;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    var n = Math.round(W * H / 5200);
+    for (var i = 0; i < n; i++) {
+      ctx.globalAlpha = 0.12 + rnd() * 0.33;
+      ctx.fillStyle = "#fff";
+      var s = rnd() < 0.8 ? 1 : 1.6;
+      ctx.fillRect(rnd() * W, rnd() * H, s, s);
+    }
+    ctx.globalAlpha = 1;
+
+    // a fine grid, fading out from the middle
+    var grid = document.createElement("canvas");
+    grid.width = bgCanvas.width; grid.height = bgCanvas.height;
+    var gx = grid.getContext("2d");
+    gx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gx.strokeStyle = "rgba(255,255,255,.05)"; gx.lineWidth = 1;
+    gx.beginPath();
+    for (var x = 0.5; x < W; x += 90) { gx.moveTo(x, 0); gx.lineTo(x, H); }
+    for (var y = 0.5; y < H; y += 90) { gx.moveTo(0, y); gx.lineTo(W, y); }
+    gx.stroke();
+    gx.globalCompositeOperation = "destination-in";
+    gx.save(); gx.translate(W / 2, H * 0.45); gx.scale(1, (0.6 * H) / (0.7 * W));
+    var m = gx.createRadialGradient(0, 0, 0, 0, 0, 0.7 * W);
+    m.addColorStop(0, "rgba(0,0,0,1)"); m.addColorStop(0.78, "rgba(0,0,0,0)");
+    gx.fillStyle = m; gx.fillRect(-W, -W, 2 * W, 2 * W);
+    gx.restore();
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 0.5; ctx.drawImage(grid, M * dpr, M * dpr); ctx.restore();
+
+    // haze and vignette, darkest at the corners
+    ctx.save(); ctx.translate(W / 2, H * 0.45); ctx.scale(1, (0.65 * H) / (0.8 * W));
+    var v = ctx.createRadialGradient(0, 0, 0, 0, 0, 0.8 * W);
+    v.addColorStop(0.28, "rgba(4,4,6,0)"); v.addColorStop(1, "rgba(4,4,6,.88)");
+    ctx.fillStyle = v; ctx.fillRect(-W, -W * 2, 2 * W, 4 * W);
+    ctx.restore();
+
+    paintRibbon(Math.max(W, V));
+    driftBackground();
+    window.dispatchEvent(new Event("bg:painted"));
+  }
+
+  /* the ribbon: a ring of warm light 130vmax across, centred on the screen, of which only an arc
+     is lit (violet through pink and red to amber), heavily blurred. It turns once every 70
+     seconds. Painted at half resolution (it's all blur). The cube's glass shows this same canvas,
+     turned to the same angle (window.bgRibbonAngle). */
+  var ribbon = document.getElementById("bgRibbon"), ribbonSpin = null;
+  function paintRibbon(vmaxPx) {
+    var css = 1.3 * vmaxPx, S = Math.round(css * 0.5), k = S / css;
+    ribbon.width = ribbon.height = S;
+    var ctx = ribbon.getContext("2d");
+    if (!ctx.createConicGradient) return;
+    var R = S / 2;
+    // CSS "from 210deg" starts at the top and runs clockwise; canvas angles start at 3 o'clock
+    var g = ctx.createConicGradient((210 - 90) * Math.PI / 180, R, R);
+    [[0, "rgba(0,0,0,0)"], [0.14, "rgba(0,0,0,0)"], [0.16, "rgba(255,70,50,0)"], [0.24, "#ff4a3a"], [0.30, "#ffb36b"],
+     [0.38, "#ff5d8f"], [0.47, "#8a3cff"], [0.56, "rgba(80,40,200,0)"], [1, "rgba(0,0,0,0)"]]
+      .forEach(function (s) { g.addColorStop(s[0], s[1]); });
+    ctx.clearRect(0, 0, S, S);
+    ctx.filter = "blur(" + (34 * k).toFixed(1) + "px)";
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = g; ctx.lineWidth = 0.09 * R;
+    ctx.beginPath(); ctx.arc(R, R, 0.675 * R, 0, Math.PI * 2); ctx.stroke();
+    ctx.filter = "none"; ctx.globalAlpha = 1;
+  }
+  if (!reduceMotion && ribbon.animate) {
+    ribbonSpin = ribbon.animate([{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
+                                { duration: 70000, iterations: Infinity });
+  }
+  // the ring's current turn, in radians clockwise
+  window.bgRibbonAngle = function () {
+    var t = ribbonSpin && ribbonSpin.currentTime;
+    return t ? (t % 70000) / 70000 * Math.PI * 2 : 0;
+  };
+  paintBackground();
+
+  /* mouse drift: the background leans gently away from the pointer, eased, and the ribbon a
+     little more, as if it were nearer; both drift back to centre when the mouse leaves */
+  var leanRaf = 0, leanT = 0;
+  function leanStep(now) {
+    var dt = leanT ? Math.min(0.05, (now - leanT) / 1000) : 0.016;
+    leanT = now;
+    var k = 1 - Math.exp(-dt * 3.5);
+    lean.x += (lean.tx - lean.x) * k; lean.y += (lean.ty - lean.y) * k;
+    driftBackground();
+    ribbon.style.translate = (-lean.x * RIBBON_LEAN).toFixed(2) + "px " + (-lean.y * RIBBON_LEAN).toFixed(2) + "px";
+    if (Math.abs(lean.tx - lean.x) + Math.abs(lean.ty - lean.y) > 0.001) leanRaf = requestAnimationFrame(leanStep);
+    else { leanRaf = 0; leanT = 0; }
+  }
+  function leanTo(x, y) {
+    lean.tx = x; lean.ty = y;
+    if (!leanRaf) leanRaf = requestAnimationFrame(leanStep);
+  }
+  if (!reduceMotion) {
+    window.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") return;
+      leanTo(e.clientX / window.innerWidth * 2 - 1, e.clientY / window.innerHeight * 2 - 1);
+    }, { passive: true });
+    document.documentElement.addEventListener("mouseleave", function () { leanTo(0, 0); });
+  }
+  var bgTimer;
+  function repaintSoon() { clearTimeout(bgTimer); bgTimer = setTimeout(paintBackground, 120); }
+  window.addEventListener("resize", repaintSoon);
+  window.addEventListener("load", repaintSoon);     // the page may have grown (fonts, images)
+  // moved in the scroll event itself, before any frame is drawn, so the cube reads the same position
+  if (!reduceMotion) window.addEventListener("scroll", driftBackground, { passive: true });
+
+  /* ---------- toast + copy ---------- */
+  var toastEl = document.getElementById("toast"), toastT;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove("show"); }, 1800);
+  }
+  var mailEl = document.getElementById("mail");
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    var addr = mailEl.textContent.trim();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(addr).then(function () { toast("Address copied"); }, function () { toast(addr); });
+    } else { toast(addr); }
+  });
+
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+/* ============================================================
+   Project cube: real 3D (three.js), scrubbed to scroll, staged like a
+   product reveal. A matte, round-edged object on black, turned one face
+   per project; a giant wordmark slides behind it on the way in; each
+   project's details appear beside it as a hairline callout.
+   Callouts and face marks are read from the DOM cards, so changing a
+   project's card in the HTML updates the object too.
+   If this module fails to load (offline, no WebGL) the page keeps the
+   flat grid it starts with.
+   ============================================================ */
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const track    = document.getElementById("cubeTrack");
+const canvas   = document.getElementById("cubeGL");
+const sceneEl  = document.querySelector(".cube-scene");
+const stageEl  = document.querySelector(".cube-stage");
+const faceEls  = [...document.querySelectorAll(".face")];
+const callouts = [...document.querySelectorAll(".callout")];
+const cubeIdx  = document.getElementById("cubeIdx");
+const cubeCat  = document.getElementById("cubeCat");
+const cubeBar  = document.getElementById("cubeBar");
+const cubePct  = document.getElementById("cubePct");
+const viewToggle = document.getElementById("viewToggle");
+const VIEW_KEY = "portfolio.v3.view";
+
+/* --- the five quarter turns: right, down, right, down, right ------------ */
+const STEPS = [
+  { axis: "y", deg: -90 },   // -> face 02
+  { axis: "x", deg:  90 },   // -> face 03
+  { axis: "y", deg: -90 },   // -> face 04
+  { axis: "x", deg:  90 },   // -> face 05
+  { axis: "y", deg: -90 }    // -> face 06
+];
+const AXIS = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0) };
+
+/* BoxGeometry material order is +X, -X, +Y, -Y, +Z, -Z,
+   and the faces come front-on in this order: front, right, top, back, left, bottom */
+const SLOT  = { right: 0, left: 1, top: 2, bottom: 3, front: 4, back: 5 };
+const ORDER = ["front", "right", "top", "back", "left", "bottom"];
+// which way is "up" on each face's texture, in cube-local space
+const UP = {
+  right:  new THREE.Vector3(0, 1, 0),
+  left:   new THREE.Vector3(0, 1, 0),
+  front:  new THREE.Vector3(0, 1, 0),
+  back:   new THREE.Vector3(0, 1, 0),
+  top:    new THREE.Vector3(0, 0, -1),
+  bottom: new THREE.Vector3(0, 0, 1)
+};
+
+function stepQuat(i, fraction) {
+  const s = STEPS[i];
+  return new THREE.Quaternion().setFromAxisAngle(AXIS[s.axis], THREE.MathUtils.degToRad(s.deg * fraction));
+}
+// orientation after `step` finished turns plus `fraction` of the next one
+function orientation(step, fraction) {
+  const q = new THREE.Quaternion();
+  for (let i = 0; i < step; i++) q.premultiply(stepQuat(i, 1));
+  if (step < STEPS.length) q.premultiply(stepQuat(step, fraction));
+  return q;
+}
+
+/* --- read a project card ------------------------------------------------- */
+function readFace(el) {
+  if (!el) return null;
+  const top  = el.querySelectorAll(".face__top span");
+  const spec = el.querySelectorAll(".face__spec span");
+  return {
+    no:    top[0] ? top[0].textContent.trim() : "",
+    cat:   top[1] ? top[1].textContent.trim() : "",
+    mono:  el.querySelector(".face__mono").textContent.trim(),
+    logo:  !!el.querySelector(".face__mono--logo"),
+    title: el.querySelector("h3").textContent.trim(),
+    body:  el.querySelector("p").textContent.trim(),
+    stack: spec[0] ? spec[0].textContent.trim() : "",
+    year:  spec[1] ? spec[1].textContent.trim() : ""
+  };
+}
+const faceEl = k => faceEls.find(f => f.classList.contains("face--" + ORDER[k])) || null;
+
+/* how many projects there are: the cards present, in face order from the front. The object
+   keeps its six faces either way; the ones without a project are plain glass, and the scroll
+   only turns through the real ones. */
+const FACES = Math.max(1, ORDER.filter((_, k) => faceEl(k)).length);
+const TURNS = FACES - 1;
+/* the first part of the scroll is the entrance: wordmark passes, object settles
+   (with a single project, the entrance is most of it) */
+const INTRO = TURNS ? 0.14 : 0.6;
+track.style.setProperty("--track", (TURNS ? 160 + 52 * TURNS : 200) + "svh");
+document.getElementById("cubeTotal").textContent = ("0" + FACES).slice(-2);
+
+/* --- the glass: clear and lightly frosted; the monogram is etched (rougher glass) and the slot glows --- */
+const S = 1024;
+function spacing(ctx, px) { try { ctx.letterSpacing = px + "px"; } catch (e) {} }
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function canvas2d(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return [c, c.getContext("2d")]; }
+// The face's label: a frosted plate in the middle (it blurs whatever the glass shows behind it),
+// the monogram on it, and the number and year as small print. Drawn three times: into the colour,
+// roughness and glow maps, so the words read as bright type on frosted glass.
+const PLATE = { x: S * 0.16, y: S * 0.36, w: S * 0.68, h: S * 0.3, r: 56 };
+// a project's logo on the plate: the wordmark and its round full stop, sized to fit
+function logo(ctx, text, ink, dot) {
+  let size = 176;
+  const measure = () => {
+    ctx.font = "800 " + size + "px Unbounded, Inter, system-ui, sans-serif";
+    spacing(ctx, -0.04 * size);
+    return ctx.measureText(text).width;
+  };
+  let w = measure();
+  const fit = PLATE.w * 0.84 / (w + 0.34 * size);
+  if (fit < 1) { size *= fit; w = measure(); }
+  const r = 0.15 * size, x = S / 2 - (w + 0.04 * size + 2 * r) / 2;
+  const base = PLATE.y + PLATE.h / 2 + 0.36 * size;          // caps sit centred on the plate
+  ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = ink; ctx.fillText(text, x, base);
+  ctx.fillStyle = dot; ctx.beginPath(); ctx.arc(x + w + 0.04 * size + r, base - r, r, 0, Math.PI * 2); ctx.fill();
+  ctx.textBaseline = "middle";
+}
+function label(ctx, data, { plate, mono, small, dot }) {
+  if (!data) return;                          // a face with no project: just glass
+  if (plate) { ctx.fillStyle = plate; roundRect(ctx, PLATE.x, PLATE.y, PLATE.w, PLATE.h, PLATE.r); ctx.fill(); }
+  ctx.textBaseline = "middle";
+  if (mono && data.logo) logo(ctx, data.mono, mono, dot || mono);
+  else if (mono) {
+    ctx.fillStyle = mono; ctx.textAlign = "center";
+    ctx.font = "500 190px Inter, system-ui, sans-serif";
+    spacing(ctx, 14);
+    ctx.fillText(data.mono, S / 2, PLATE.y + PLATE.h / 2 + 6);
+  }
+  if (small) {
+    ctx.fillStyle = small;
+    ctx.font = "500 30px Inter, system-ui, sans-serif";
+    spacing(ctx, 6);
+    ctx.textAlign = "left";  ctx.fillText(data.no.toUpperCase(), 92, S - 96);
+    ctx.textAlign = "right"; ctx.fillText(data.year, S - 92, S - 96);
+  }
+}
+// colour: clear glass; the plate a little darker, so the lit type stands out against it
+function paintSkin(data) {
+  const [c, ctx] = canvas2d(S, S);
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, S, S);
+  label(ctx, data, { plate: "#8e8e98", mono: "#ffffff", small: "#e4e4ea", dot: "#3d8fff" });
+  return c;
+}
+// roughness (green channel): smooth glass (~0.19), a strong frost on the plate, the type frostier still
+function paintFrost(data) {
+  const [c, ctx] = canvas2d(S, S);
+  ctx.fillStyle = "rgb(48,48,48)"; ctx.fillRect(0, 0, S, S);
+  label(ctx, data, { plate: "rgb(165,165,165)", mono: "rgb(230,230,230)", small: "rgb(210,210,210)" });
+  return c;
+}
+// what lights up when this face is the current one: the red slot, and the lettering
+function paintGlow(data) {
+  const [c, ctx] = canvas2d(S, S);
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, S, S);
+  label(ctx, data, { mono: "rgba(255,255,255,0.62)", small: "rgba(255,255,255,0.42)", dot: "rgba(40,140,255,1)" });
+  ctx.shadowColor = "#ff2a3d"; ctx.shadowBlur = 26;
+  const g = ctx.createLinearGradient(S / 2 - 80, 0, S / 2 + 80, 0);
+  g.addColorStop(0, "#5a0710"); g.addColorStop(0.5, "#ff3346"); g.addColorStop(1, "#5a0710");
+  ctx.fillStyle = g;
+  if (data) { roundRect(ctx, S / 2 - 78, 122, 156, 12, 6); ctx.fill(); }
+  return c;
+}
+/* what the glass bends: the page's own background (the fixed #bgCanvas, painted once by the page
+   script) and the wordmark. They live in the 3D scene because refraction can only see what WebGL draws. */
+const WORD = "selected work", WORD_PX = 400;
+function paintWord() {
+  const font = "500 " + WORD_PX + "px Inter, system-ui, sans-serif";
+  let [c, ctx] = canvas2d(8, 8);
+  ctx.font = font; spacing(ctx, -WORD_PX * 0.045);
+  const w = Math.ceil(ctx.measureText(WORD).width);
+  [c, ctx] = canvas2d(w + 60, Math.round(WORD_PX * 1.3));
+  ctx.font = font; spacing(ctx, -WORD_PX * 0.045);
+  ctx.fillStyle = "#f2f2f2"; ctx.textBaseline = "middle";
+  ctx.fillText(WORD, 30, c.height / 2);
+  return c;
+}
+
+/* --- scene -------------------------------------------------------------- */
+let renderer, camera, scene, pivot, spin, mesh, backdrop, backTex, ribbonMesh, ribbonTex, word, baseZ = 9, morphing = false;
+const skins = [], frosts = [], glows = [], materials = [];
+const BACK_D = 50, WORD_Z = -2.6;   // the backdrop rides with the camera, this far in front of it
+const visibleHeight = d => 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+
+function build() {
+  renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  scene  = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+  camera.position.set(0, 0, 9);
+
+  // studio reflections: glass is mostly what it reflects and what it bends
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.9;
+
+  const key = new THREE.DirectionalLight(0xffffff, 1.4);    // soft key, upper left
+  key.position.set(-3.5, 4, 5);
+  scene.add(key);
+  const rimR = new THREE.DirectionalLight(0xffffff, 3.2);   // edge light from behind right
+  rimR.position.set(5, 2.5, -3.5);
+  scene.add(rimR);
+  const rimL = new THREE.DirectionalLight(0xcfd8ff, 1.6);   // cooler edge from behind left
+  rimL.position.set(-5, -2, -3);
+  scene.add(rimL);
+  const kiss = new THREE.PointLight(0xd4021d, 5, 7, 2);     // the site's red, just grazing the lower edge
+  kiss.position.set(0.6, -2.4, 1.2);
+  scene.add(kiss);
+
+  // behind the glass: opaque, so the refraction pass can see them
+  // the backdrop is the page background itself, pinned to the screen: each frame, its texture
+  // shows exactly the part of the viewport the stage covers, so what the glass bends matches the page
+  backTex = new THREE.CanvasTexture(document.getElementById("bgCanvas"));
+  backTex.colorSpace = THREE.SRGBColorSpace;
+  backTex.minFilter = backTex.magFilter = THREE.LinearFilter;
+  backTex.generateMipmaps = false;
+  backdrop = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: backTex, toneMapped: false, depthWrite: false }));
+  backdrop.position.z = -BACK_D;
+  backdrop.renderOrder = -1;
+  // drawn only into the glass's refraction pass (an offscreen target); on the canvas itself it
+  // writes nothing, so everywhere outside the glass you see the real page background, which
+  // the browser scrolls in step with the page (a copy drawn here would lag it by a frame)
+  backdrop.onBeforeRender = r => { backdrop.material.colorWrite = r.getRenderTarget() !== null; };
+  camera.add(backdrop);
+  scene.add(camera);
+  // a repaint can change the canvas's size, and a texture keeps the size it was first uploaded at:
+  // dispose it so three.js allocates it afresh
+  // the ribbon, in front of it: the page's own ring canvas, added on (it's light on near-black),
+  // placed and turned each frame to match the page's (see alignBackdrop)
+  ribbonTex = new THREE.CanvasTexture(document.getElementById("bgRibbon"));
+  ribbonTex.colorSpace = THREE.SRGBColorSpace;
+  ribbonMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({
+    map: ribbonTex, blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, toneMapped: false }));
+  ribbonMesh.position.z = -(BACK_D - 1);
+  ribbonMesh.renderOrder = -0.5;
+  ribbonMesh.onBeforeRender = r => { ribbonMesh.material.colorWrite = r.getRenderTarget() !== null; };
+  camera.add(ribbonMesh);
+  addEventListener("bg:painted", () => {
+    backTex.dispose(); backTex.needsUpdate = true;
+    ribbonTex.dispose(); ribbonTex.needsUpdate = true;
+    if (mesh) { alignBackdrop(); render(); }
+  });
+  const wordTex = new THREE.CanvasTexture(paintWord());
+  wordTex.colorSpace = THREE.SRGBColorSpace;
+  wordTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  word = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: wordTex, alphaTest: 0.5, alphaToCoverage: true, toneMapped: false }));
+  word.position.z = WORD_Z;
+  scene.add(word);
+
+  const mats = new Array(6);
+  ORDER.forEach((name, k) => {
+    const data = readFace(faceEl(k));
+    const tex = new THREE.CanvasTexture(paintSkin(data));
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const frost = new THREE.CanvasTexture(paintFrost(data));
+    // this face arrives front-on at step k: roll its textures so the monogram is upright
+    const up = UP[name].clone().applyQuaternion(orientation(k, 0));
+    const roll = Math.atan2(up.x, up.y);
+    const g = new THREE.CanvasTexture(paintGlow(data));
+    g.colorSpace = THREE.SRGBColorSpace;
+    for (const t of [tex, frost, g]) {
+      t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      t.center.set(0.5, 0.5); t.rotation = roll; t.needsUpdate = true;
+    }
+    skins.push(tex); frosts.push(frost); glows.push(g);
+    materials[k] = mats[SLOT[name]] = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff, map: tex, metalness: 0,
+      roughness: 1, roughnessMap: frost,             // ~0.19 over the glass (a soft frost), frosted where etched
+      transmission: 1, thickness: 1.8, ior: 1.46, dispersion: 0.4,
+      attenuationColor: 0xf4ecff, attenuationDistance: 8,
+      clearcoat: 1, clearcoatRoughness: 0.06,
+      iridescence: 0.3, iridescenceIOR: 1.25, iridescenceThicknessRange: [120, 380],
+      emissiveMap: g, emissive: 0xffffff, emissiveIntensity: 1.8
+    });
+  });
+
+  mesh = new THREE.Mesh(new RoundedBoxGeometry(2, 2, 2, 8, 0.2), mats);
+  // tilted on the diagonal, like a product shot; the turns happen inside the tilt
+  pivot = new THREE.Group();
+  pivot.rotation.set(0.2, -0.42, -0.46);
+  // the idle spin turns around the object's own (tilted) vertical axis, inside the tilt
+  spin = new THREE.Group();
+  spin.add(mesh);
+  pivot.add(spin);
+  scene.add(pivot);
+  resize();
+}
+function resize() {
+  if (!renderer || morphing) return;
+  const w = sceneEl.clientWidth, h = sceneEl.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.fov = 30;
+  baseZ = w < 720 ? 14 : w < 1100 ? 12 : 9; // pull back on narrower screens, so the object leaves room for the notes
+  camera.updateProjectionMatrix();
+  // the backdrop fills the view exactly at its depth
+  const bh = visibleHeight(BACK_D);
+  backdrop.scale.set(bh * camera.aspect, bh, 1);
+  render();
+}
+function render() { if (renderer) renderer.render(scene, camera); }
+// crop the page background to the stage's rectangle, measured against where the (drifting)
+// background canvas sits right now (texture v runs bottom-up)
+const bgEl = document.getElementById("bgCanvas"), ribbonEl = document.getElementById("bgRibbon");
+function alignBackdrop() {
+  const r = canvas.getBoundingClientRect(), b = bgEl.getBoundingClientRect();
+  if (!b.width || !b.height || !r.width || !r.height) return;
+  backTex.repeat.set(r.width / b.width, r.height / b.height);
+  backTex.offset.set((r.left - b.left) / b.width, 1 - (r.bottom - b.top) / b.height);
+  // the ring: centred on the window, 130vmax across, at the page's angle
+  const vw = document.documentElement.clientWidth, vh = innerHeight;
+  const rr = ribbonEl.getBoundingClientRect();                // turned, but still centred on the ring
+  const per = visibleHeight(BACK_D - 1) / r.height;          // world units per screen pixel at its depth
+  const size = 1.3 * Math.max(vw, vh) * per;
+  ribbonMesh.scale.set(size, size, 1);
+  ribbonMesh.position.x = (rr.left + rr.width / 2 - (r.left + r.width / 2)) * per;
+  ribbonMesh.position.y = -(rr.top + rr.height / 2 - (r.top + r.height / 2)) * per;
+  ribbonMesh.rotation.z = -(window.bgRibbonAngle ? window.bgRibbonAngle() : 0);
+}
+
+/* --- callouts and HUD ----------------------------------------------------- */
+function showCallout(face) {
+  callouts.forEach(c => c.classList.remove("on"));
+  if (face < 0) return;
+  const d = readFace(faceEl(face)), el = callouts[face % 2];
+  el.querySelector(".callout__icon").textContent = d.mono;
+  el.querySelector("h3").textContent = d.title;
+  el.querySelector("p").textContent = d.body;
+  el.querySelector(".callout__meta").textContent = [d.stack, d.year].filter(Boolean).join("  ·  ");
+  void el.offsetWidth;                      // restart the draw-in
+  el.classList.add("on");
+  cubeIdx.textContent = ("0" + (face + 1)).slice(-2);
+  cubeCat.textContent = d.cat;
+}
+
+/* --- scroll scrubbing, spring smoothed ---------------------------------- */
+let rafId = 0, lastT = 0, lastScrollAt = 0, lastFace = -2;
+let currentP = 0, targetP = 0, vel = 0;
+const OMEGA = 6.5, SUBSTEP = 1 / 240, IDLE_SNAP_MS = 240;
+/* idle spin: starts this long after the last scroll, at this speed (radians a second) */
+const IDLE_DELAY_MS = 1200, IDLE_SPEED = 0.45, TAU = Math.PI * 2;
+let idleAngle = 0, idleMix = 0, stageVisible = false;
+
+const easeInOut = t => 0.5 - Math.cos(Math.PI * t) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const clamp01 = v => Math.min(1, Math.max(0, v));
+function scrollProgress() {
+  const r = track.getBoundingClientRect();
+  const span = r.height - innerHeight;
+  return span > 0 ? clamp01(-r.top / span) : 0;
+}
+// rest on a face once scrolling stops (the entrance scrubs freely)
+function snapped(p) {
+  if (p < INTRO || !TURNS) return p;
+  const q = (p - INTRO) / (1 - INTRO);
+  return INTRO + Math.round(q * TURNS) / TURNS * (1 - INTRO);
+}
+
+function apply(p) {
+  const q = clamp01((p - INTRO) / (1 - INTRO));
+  const t = q * TURNS;
+  const step = Math.max(0, Math.min(TURNS - 1, Math.floor(t)));
+  const local = t - step;
+  // dwell 18% / turn 64% / dwell 18% of each project's scroll
+  const turn = TURNS ? easeInOut(clamp01((local - 0.18) / 0.64)) : 0;
+  mesh.quaternion.copy(orientation(step, turn));
+  // only the project facing you glows; the light hands over as the object turns
+  const at = p < INTRO ? -1 + clamp01(p / INTRO) : step + turn;
+  materials.forEach((mat, k) => { mat.emissiveIntensity = 0.06 + 1.9 * clamp01(1 - Math.abs(at - k) * 1.5); });
+
+  // entrance: the object rises into place and settles its tilt
+  const e = easeOut(clamp01(p / INTRO));
+  const narrow = sceneEl.clientWidth < 720;
+  pivot.position.y = (narrow ? 1.1 : 0) - 0.5 * (1 - e);
+  pivot.rotation.set(0.2 + 0.25 * (1 - e), -0.42 + p * 0.35, -0.46);
+  mesh.scale.setScalar(0.88 + 0.12 * e);
+  camera.position.z = baseZ - p * 0.7;        // a slow dolly in
+  camera.updateMatrixWorld();
+
+  // the wordmark crosses the stage behind the glass, right to left, during the first third;
+  // sized like the old CSS type (21% of the width, at most 340px)
+  const m = clamp01(p / 0.34);
+  const visW = visibleHeight(camera.position.z - WORD_Z) * camera.aspect;
+  const img = word.material.map.image;
+  const wh = visW * Math.min(0.21, 340 / stageEl.clientWidth) * (img.height / WORD_PX);
+  const ww = wh * img.width / img.height;
+  word.scale.set(ww, wh, 1);
+  const edge = visW / 2 + ww / 2;
+  word.position.set(edge * (1 - 2 * m), wh * 0.04, WORD_Z);
+  alignBackdrop();
+  render();
+
+  cubeBar.style.transform = `scaleX(${p.toFixed(4)})`;
+  cubePct.textContent = Math.round(p * 100) + "%";
+
+  const face = p < INTRO * 0.75 ? -1 : Math.min(FACES - 1, Math.round(t));
+  if (face !== lastFace) { lastFace = face; showCallout(face); }
+}
+function frame(now) {
+  rafId = 0;
+  if (morphing || document.body.classList.contains("flat")) return;
+  const gap = lastT ? now - lastT : 16;
+  const dt = Math.min(50, gap) / 1000;
+  const idleDt = Math.min(250, gap) / 1000;   // the idle spin keeps its speed even when frames are slow
+  lastT = now;
+  const raw = scrollProgress();
+  targetP = (now - lastScrollAt > IDLE_SNAP_MS) ? snapped(raw) : raw;
+
+  let left = dt;
+  while (left > 0) {
+    const h = Math.min(SUBSTEP, left);
+    left -= h;
+    vel += (-OMEGA * OMEGA * (currentP - targetP) - 2 * OMEGA * vel) * h;
+    currentP += vel * h;
+  }
+  if (Math.abs(targetP - currentP) < 0.0002 && Math.abs(vel) < 0.002) { currentP = targetP; vel = 0; }
+
+  const settled = currentP === targetP && vel === 0;
+
+  // idle: once scrolling has stopped for a moment, the object slowly turns on its own and floats;
+  // the moment scrolling resumes it eases back to the nearest full turn, so the current face returns
+  const idle = !reduceMotion && stageVisible && settled && now - lastScrollAt > IDLE_DELAY_MS;
+  idleMix += ((idle ? 1 : 0) - idleMix) * (1 - Math.exp(-idleDt * (idle ? 1.2 : 6)));
+  if (idle) idleAngle += IDLE_SPEED * idleMix * idleDt;
+  else {
+    const rest = Math.round(idleAngle / TAU) * TAU;
+    idleAngle += (rest - idleAngle) * (1 - Math.exp(-idleDt * 5));
+    if (Math.abs(rest - idleAngle) < 0.0005) idleAngle = 0;   // a whole number of turns is the same pose
+  }
+  spin.rotation.y = idleAngle;
+  spin.position.y = Math.sin(now / 1400) * 0.05 * idleMix;
+
+  apply(currentP);
+  const busy = !settled || now - lastScrollAt <= IDLE_SNAP_MS;
+  const spinning = idleMix > 0.001 || idleAngle !== 0;
+  // keep going while scrolling, while the idle spin runs or settles, and while it's due to start
+  if (busy || spinning || (stageVisible && !reduceMotion)) rafId = requestAnimationFrame(frame);
+  else lastT = 0;
+}
+function kick() {
+  if (morphing || document.body.classList.contains("flat")) return;
+  if (!rafId) { lastT = 0; rafId = requestAnimationFrame(frame); }
+}
+
+/* --- view toggle -------------------------------------------------------- */
+function setView(mode) {
+  const flat = mode === "flat";
+  document.body.classList.toggle("flat", flat);
+  viewToggle.setAttribute("aria-pressed", String(flat));
+  viewToggle.textContent = flat ? "View as 3D cube" : "View as flat grid";
+  try { localStorage.setItem(VIEW_KEY, mode); } catch (e) {}
+  if (flat) { if (rafId) cancelAnimationFrame(rafId); rafId = 0; }
+  else { lastFace = -2; currentP = targetP = scrollProgress(); vel = 0; resize(); apply(currentP); }
+}
+
+function refresh() {
+  if (!mesh) return;
+  ORDER.forEach((name, k) => {
+    const data = readFace(faceEl(k));
+    skins[k].image = paintSkin(data);
+    frosts[k].image = paintFrost(data);
+    glows[k].image = paintGlow(data);
+    glows[k].needsUpdate = true;
+    skins[k].needsUpdate = frosts[k].needsUpdate = true;
+  });
+  word.material.map.image = paintWord();    // the web font may have just landed
+  word.material.map.needsUpdate = true;
+  lastFace = -2;                            // re-read the callout too
+  apply(currentP);
+}
+
+/* --- cube <-> grid ---------------------------------------------------------
+   To the grid: the object draws in, then bursts: its six faces blow outward, flaring, as the
+   whole formation swings round. Each face somersaults on a long arc and dives onto its card;
+   as it slams down the card flashes into place beneath it and the glass fades away.
+   To the cube: the cards are ripped up as glass, somersault in to hover around the object,
+   orbit it once, then slam shut into it with a punch.
+   While it runs, the canvas covers the whole window (body.morph). */
+let panels = null;
+const PANEL_T = 0.12, CARD_GLOW = 0.3, LIT = 0.6, FLARE = 1.6;
+const BLOOM = 1.35;                              // how far the faces blow out (the object is 2 across)
+const SWING = 0.7;                               // how far the formation swings round, radians
+const T_CROUCH = 200, T_BURST = 560, T_TRAVEL = 1250, T_STAGGER = 110, T_LAND = 380;
+const T_PICKUP = 380, T_ORBIT = 460, T_CLOSE = 300, T_PUNCH = 240;
+const TWIST = [0.3, -0.26, 0.22, -0.34, 0.28, -0.2];     // a roll in flight, different for each
+const X_AXIS = new THREE.Vector3(1, 0, 0), Y_AXIS = new THREE.Vector3(0, 1, 0), Z_AXIS = new THREE.Vector3(0, 0, 1);
+const FLIP = [[X_AXIS, 1], [Y_AXIS, -1], [X_AXIS, -1], [Y_AXIS, 1], [X_AXIS, 1], [Y_AXIS, -1]];  // one somersault each
+const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeInOutSine = t => -(Math.cos(Math.PI * t) - 1) / 2;
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+const easeOutBack = t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const easeInBack = t => { const c = 1.6; return (c + 1) * t * t * t - c * t * t; };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+// one thin glass slab per face, wearing that face's glass, upright (the maps share the faces'
+// images, so an edit to a project shows up here too). Always "transparent", so a slab can fade
+// without its shader being rebuilt.
+function makePanels() {
+  const geo = new RoundedBoxGeometry(2, 2, PANEL_T, 4, 0.07);
+  panels = ORDER.map((name, k) => {
+    const m = materials[k].clone();
+    for (const key of ["map", "roughnessMap", "emissiveMap"]) { const t = m[key].clone(); t.rotation = 0; m[key] = t; }
+    m.transparent = true;
+    const p = new THREE.Mesh(geo, m);
+    p.visible = false;
+    scene.add(p);
+    return p;
+  });
+}
+// the canvas as a full-window layer, same camera (only the aspect changes)
+function overlaySize() {
+  const W = document.documentElement.clientWidth, H = innerHeight;
+  renderer.setSize(W, H, false);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+}
+// a point at camera distance d: where it lands on screen when drawn in `rect` (the stage),
+// and where it has to be to land on that same spot in the full-window layer
+function stageToScreen(p, rect) {
+  const d = camera.position.z - p.z, vh = visibleHeight(d);
+  return [rect.left + rect.width / 2 + p.x / vh * rect.height, rect.top + rect.height / 2 - p.y / vh * rect.height, d];
+}
+function screenToWorld(sx, sy, d) {
+  const vh = visibleHeight(d), W = document.documentElement.clientWidth, H = innerHeight;
+  return new THREE.Vector3((sx - W / 2) / H * vh, -(sy - H / 2) / H * vh, camera.position.z - d);
+}
+const toLayer = (p, rect) => { const [sx, sy, d] = stageToScreen(p, rect); return screenToWorld(sx, sy, d); };
+// the six faces as the object stands in the stage right now (`out` = each face's outward
+// direction; the list also carries the object's centre)
+function cubePoses(rect) {
+  scene.updateMatrixWorld();
+  const mp = new THREE.Vector3(), mq = new THREE.Quaternion(), ms = new THREE.Vector3();
+  mesh.matrixWorld.decompose(mp, mq, ms);
+  const k = rect.height / innerHeight;
+  const poses = ORDER.map((_, i) => {
+    // face i shows upright and front-on when the object's turn is orientation(i, 0)
+    const quat = mq.clone().multiply(orientation(i, 0).invert());
+    const out = Z_AXIS.clone().applyQuaternion(quat);
+    const c = mp.clone().addScaledVector(out, (1 - PANEL_T / 2) * ms.x);
+    // a touch under full size: the object's rounded edges make it read smaller than a sharp box
+    return { pos: toLayer(c, rect), quat, out, scale: new THREE.Vector3(ms.x * k * 0.93, ms.y * k * 0.93, ms.z * k) };
+  });
+  poses.center = toLayer(mp, rect);
+  return poses;
+}
+// the faces pushed along their own directions by `by`, scaled by `grow`, and the whole
+// formation swung round the object's centre by `swing`
+const _swing = new THREE.Quaternion();
+function formation(cube, by, grow, swing) {
+  _swing.setFromAxisAngle(Y_AXIS, swing);
+  return cube.map(c => {
+    const pos = c.pos.clone().addScaledVector(c.out, by).sub(cube.center).applyQuaternion(_swing).add(cube.center);
+    return { pos, quat: _swing.clone().multiply(c.quat), out: c.out.clone().applyQuaternion(_swing),
+             scale: c.scale.clone().multiply(new THREE.Vector3(grow, grow, 1)) };
+  });
+}
+// the six cards' boxes on screen, as slabs lying flat at the object's depth (`lift` raises them)
+function cardRects() { return ORDER.map((_, i) => faceEl(i) ? faceEl(i).getBoundingClientRect() : null); }
+function cardPoses(rects, lift = 0) {
+  const d = camera.position.z, per = visibleHeight(d) / innerHeight;
+  return rects.map(r => {
+    if (!r) return null;                          // a face with no card
+    const pos = screenToWorld(r.left + r.width / 2, r.top + r.height / 2, d);
+    pos.z -= PANEL_T / 2 - lift;                  // the slab's front face sits on the card
+    const s = 1 + lift * 0.04;
+    return { pos, quat: new THREE.Quaternion(), out: Z_AXIS.clone(), scale: new THREE.Vector3(r.width * per / 2 * s, r.height * per / 2 * s, 1) };
+  });
+}
+
+// --- drawing one slab at a moment of its journey ---
+const _q = new THREE.Quaternion(), _a = new THREE.Vector3(), _b = new THREE.Vector3();
+function bezier(p0, p1, p2, p3, t, out) {
+  const u = 1 - t;
+  return out.set(0, 0, 0)
+    .addScaledVector(p0, u * u * u).addScaledVector(p1, 3 * u * u * t)
+    .addScaledVector(p2, 3 * u * t * t).addScaledVector(p3, t * t * t);
+}
+function pose(p, a, b, e) {                      // straight blend between two poses (e may overshoot)
+  p.position.lerpVectors(a.pos, b.pos, e);
+  p.quaternion.slerpQuaternions(a.quat, b.quat, Math.min(1, Math.max(0, e)));
+  p.scale.lerpVectors(a.scale, b.scale, e);
+}
+// a long arc: leave `a` along its outward direction, somersault once and roll on the way,
+// and come down onto `b` from along its own
+function flight(p, a, b, v, i) {
+  const e = easeInOutCubic(v);
+  _a.copy(a.pos).addScaledVector(a.out, 2.2);
+  _b.copy(b.pos).addScaledVector(b.out, 3.0);
+  bezier(a.pos, _a, _b, b.pos, e, p.position);
+  p.quaternion.slerpQuaternions(a.quat, b.quat, easeInOutSine(clamp01(v * 1.15 - 0.05)));
+  const [axis, dir] = FLIP[i];
+  p.quaternion.multiply(_q.setFromAxisAngle(axis, dir * Math.PI * 2 * easeInOutCubic(clamp01(v * 1.2 - 0.1))));
+  p.quaternion.multiply(_q.setFromAxisAngle(Z_AXIS, TWIST[i] * Math.sin(Math.PI * e)));
+  p.scale.lerpVectors(a.scale, b.scale, e);
+}
+function setLook(p, glow, opacity) { p.material.emissiveIntensity = glow; p.material.opacity = opacity; }
+const flare = (f, top) => top * Math.sin(Math.PI * clamp01(f));   // up and back down again
+
+// run `draw(ms)` every frame for `total` ms
+function animate(total, draw) {
+  return new Promise(done => {
+    draw(0); render();                            // draw the first frame now, not a frame late
+    const t0 = performance.now();
+    const step = now => {
+      const t = Math.min(total, Math.max(0, now - t0));
+      draw(t);
+      render();
+      if (t < total) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
+}
+function showPanels(on) {
+  panels.forEach(p => { p.visible = on; setLook(p, CARD_GLOW, 1); });
+  mesh.visible = word.visible = !on;
+}
+
+async function morphTo(mode) {
+  if (morphing) return;
+  const body = document.body, toFlat = mode === "flat";
+  // no film for reduced motion, or in a background tab (it would only play once you came back)
+  if (reduceMotion || document.hidden || toFlat === body.classList.contains("flat")) { setView(mode); return; }
+  if (!panels) makePanels();
+  morphing = true;
+  viewToggle.disabled = true;
+  if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+  const lastStart = T_STAGGER * (FACES - 1);
+  try {
+    if (toFlat) {
+      const cube = cubePoses(canvas.getBoundingClientRect());
+      const crouch = formation(cube, -0.1, 0.96, 0);
+      const bloom = formation(cube, BLOOM, 1 / 0.93, SWING);
+      const glowCube = materials.map(m => m.emissiveIntensity);
+      body.classList.add("morph");
+      overlaySize();
+      showPanels(true);
+      // 1. it draws in and dims...
+      await animate(T_CROUCH, t => {
+        const e = easeInOutSine(t / T_CROUCH);
+        panels.forEach((p, i) => { pose(p, cube[i], crouch[i], e); setLook(p, glowCube[i] * (1 - 0.8 * e), 1); });
+      });
+      // 2. ...then bursts: the faces blow outward, overshoot and flare as the formation swings
+      await animate(T_BURST, t => {
+        const f = t / T_BURST, e = easeOutBack(f);
+        const now = formation(cube, -0.1 + (BLOOM + 0.1) * e, 0.96 + (1 / 0.93 - 0.96) * Math.min(1, e), SWING * easeOutCubic(f));
+        panels.forEach((p, i) => { pose(p, now[i], now[i], 0); setLook(p, LIT * f + flare(f * 1.4, FLARE), 1); });
+      });
+      // 3. the page becomes the grid underneath (cards hidden until their glass lands)
+      body.classList.add("morph-cards-off");
+      setView("flat");
+      const top = document.getElementById("cube").getBoundingClientRect().top;
+      // coming out of the pinned stage: grid to the top (instantly: the page scrolls smoothly by
+      // default, and the cards must be where they will stay before their positions are read)
+      if (top < 0) scrollBy({ top: top - 110, behavior: "instant" });
+      overlaySize();
+      const cards = cardPoses(cardRects());
+      const away = formation(cube, BLOOM + 2.4, 0.8, SWING + 0.6);
+      // 4. each face somersaults on a long arc and dives onto its card; as it slams down the card
+      //    flashes into place beneath it and the glass fades away. Faces with no card keep going
+      //    outward and fade.
+      await animate(lastStart + T_TRAVEL + T_LAND, t => {
+        panels.forEach((p, i) => {
+          if (!cards[i]) {
+            const v = clamp01(t / T_TRAVEL);
+            pose(p, bloom[i], away[i], easeOutCubic(v));
+            setLook(p, LIT, 1 - easeInOutSine(v));
+            return;
+          }
+          const v = clamp01((t - i * T_STAGGER) / T_TRAVEL);
+          flight(p, bloom[i], cards[i], v, i);
+          const f = clamp01((t - i * T_STAGGER - T_TRAVEL) / T_LAND);
+          if (f > 0) {
+            faceEl(i).classList.add("landed");
+            p.scale.multiply(_a.set(1 + flare(f * 2, 0.05), 1 + flare(f * 2, 0.05), 1));   // the impact
+          }
+          setLook(p, LIT + (CARD_GLOW - LIT) * v + flare(f * 1.5, 1.4), 1 - easeInOutSine(f));
+        });
+      });
+      await wait(560);                              // let the last card's contents settle
+    } else {
+      // 1. rip up: glass slabs appear over the cards and lift off hard; the cards fade beneath
+      const rects = cardRects();
+      body.classList.add("morph");
+      overlaySize();
+      showPanels(true);
+      let flat = cardPoses(rects), lifted = cardPoses(rects, 0.9);
+      body.classList.add("morph-cards-off");
+      await animate(T_PICKUP, t => {
+        const f = t / T_PICKUP, e = easeOutBack(f);
+        panels.forEach((p, i) => {
+          if (!flat[i]) { setLook(p, LIT, 0); return; }   // no card: waits, unseen
+          pose(p, flat[i], lifted[i], e); setLook(p, CARD_GLOW + (LIT - CARD_GLOW) * f + flare(f, 0.8), Math.min(1, f * 2));
+        });
+      });
+      // 2. the page turns back into the stage underneath (the scroll position stays put)
+      morphing = false; setView("cube"); morphing = true;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+      overlaySize();
+      showPanels(true);
+      panels.forEach((p, i) => setLook(p, LIT, rects[i] ? 1 : 0));
+      lifted = cardPoses(rects, 0.9);               // same place on screen, new camera distance
+      const cube = cubePoses(sceneEl.getBoundingClientRect());
+      const glowCube = materials.map(m => m.emissiveIntensity);
+      const hover = formation(cube, BLOOM, 1 / 0.93, -SWING);
+      const away = formation(cube, BLOOM + 2.4, 0.8, -SWING - 0.6);
+      // 3. they somersault in and hover around the object, swung round (faces with no card
+      //    drift in from further out, fading up)...
+      await animate(lastStart + T_TRAVEL, t => {
+        panels.forEach((p, i) => {
+          if (!lifted[i]) {
+            const v = clamp01(t / (lastStart + T_TRAVEL));
+            pose(p, away[i], hover[i], easeInOutCubic(v)); setLook(p, LIT, easeInOutSine(v));
+            return;
+          }
+          flight(p, lifted[i], hover[i], clamp01((t - i * T_STAGGER) / T_TRAVEL), i);
+        });
+      });
+      // 4. ...orbit it into line...
+      await animate(T_ORBIT, t => {
+        const now = formation(cube, BLOOM, 1 / 0.93, -SWING * (1 - easeInOutSine(t / T_ORBIT)));
+        panels.forEach((p, i) => pose(p, now[i], now[i], 0));
+      });
+      // 5. ...and slam shut (drawing back a little first)...
+      const open = formation(cube, BLOOM, 1 / 0.93, 0);
+      await animate(T_CLOSE, t => {
+        const e = easeInBack(t / T_CLOSE);
+        panels.forEach((p, i) => { pose(p, open[i], cube[i], e); setLook(p, LIT, 1); });
+      });
+      // 6. ...with a punch and a flash
+      await animate(T_PUNCH, t => {
+        const f = t / T_PUNCH;
+        const now = formation(cube, flare(f, 0.08), 1 + flare(f, 0.05), 0);
+        panels.forEach((p, i) => { pose(p, now[i], now[i], 0); setLook(p, glowCube[i] + flare(f, FLARE), 1); });
+      });
+    }
+  } finally {
+    body.classList.remove("morph", "morph-cards-off");
+    faceEls.forEach(f => f.classList.remove("landed"));
+    showPanels(false);
+    morphing = false;
+    viewToggle.disabled = false;
+    if (!body.classList.contains("flat")) { resize(); apply(currentP); lastScrollAt = performance.now(); kick(); }
+  }
+}
+
+/* --- go ----------------------------------------------------------------- */
+try {
+  build();
+  document.body.classList.add("cube-ready");
+
+  let saved = null;
+  try { saved = localStorage.getItem(VIEW_KEY); } catch (e) {}
+  setView(saved || (reduceMotion ? "flat" : "cube"));
+
+  viewToggle.addEventListener("click", () =>
+    morphTo(document.body.classList.contains("flat") ? "cube" : "flat"));
+  addEventListener("scroll", () => { lastScrollAt = performance.now(); kick(); }, { passive: true });
+  addEventListener("resize", () => { resize(); lastScrollAt = performance.now(); kick(); });
+  // repaint once the web font lands, and after an edit session
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+  if (document.fonts && document.fonts.load) document.fonts.load("800 100px Unbounded").then(refresh, () => {});
+  addEventListener("cube:refresh", refresh);
+  // run the idle spin only while the cube is on screen
+  new IntersectionObserver(([e]) => { stageVisible = e.isIntersecting; if (stageVisible) kick(); }).observe(track);
+} catch (err) {
+  console.error("cube: falling back to the flat grid —", err);
+  document.body.classList.add("flat");
+  document.body.classList.remove("cube-ready");
+}
+</script>
+</body>
+</html>
