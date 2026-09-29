@@ -843,19 +843,19 @@
      one continuous background. It also leans away from the mouse (see "mouse drift" below), so
      it's painted with a margin all round that the lean can reveal. */
   var bgCanvas = document.getElementById("bgCanvas");
-  var BG_RATE = 0.1, bgExtra = 0;
+  var BG_RATE = 0.1, bgExtra = 0, bgSpan = 0;   // bgSpan is cached; reading scrollHeight every scroll forces a reflow
   var BG_MARGIN = 40, BG_LEAN = 16, RIBBON_LEAN = 34;   // px; the ribbon is "nearer", so it moves more
   var lean = { x: 0, y: 0, tx: 0, ty: 0 };             // -1..1 each way, smoothed toward the pointer
   function scrollSpan() { return Math.max(0, document.documentElement.scrollHeight - window.innerHeight); }
   function driftBackground() {
-    var span = scrollSpan();
-    var y = span ? Math.min(1, window.scrollY / span) * bgExtra : 0;
+    var y = bgSpan ? Math.min(1, window.scrollY / bgSpan) * bgExtra : 0;
     bgCanvas.style.transform = "translate3d(" + (-lean.x * BG_LEAN).toFixed(2) + "px," + (-lean.y * BG_LEAN - y).toFixed(2) + "px,0)";
   }
   function paintBackground() {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var W = document.documentElement.clientWidth, V = window.innerHeight;
-    bgExtra = reduceMotion ? 0 : Math.round(Math.min(scrollSpan() * BG_RATE, 2 * V));
+    bgSpan = scrollSpan();
+    bgExtra = reduceMotion ? 0 : Math.round(Math.min(bgSpan * BG_RATE, 2 * V));
     var H = V + bgExtra;                      // the whole painted height; V is one screen of it
     var vmax = Math.max(W, V) / 100;
     var M = reduceMotion ? 0 : BG_MARGIN;
@@ -1202,7 +1202,7 @@ const visibleHeight = d => 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov 
 
 function build() {
   renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));   // 1.5 is plenty for the glass; caps GPU fill on hi-DPI screens
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   scene  = new THREE.Scene();
